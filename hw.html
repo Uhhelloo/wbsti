@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farwest Gymnastic Association</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background: linear-gradient(rgba(26, 54, 93, 0.85), rgba(26, 54, 93, 0.85)),
+                        url('fga-hero.jpg'); /* 👈 YOUR HERO IMAGE HERE */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 80px 20px 60px;
+            text-align: center;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+            border-bottom: 6px solid #1a365d;
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* ALL HEADER STYLES SAME AS BEFORE */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+        .logo {
+            font-size: 2.8em;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+        }
+        .subtitle {
+            color: #e2e8f0;
+            font-size: 1.6em;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        /* 🎨 NEW PHOTO FRAMES BELOW - PLACE YOUR PHOTOS HERE */
+        .photo-frames {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+            padding: 0 20px;
+        }
+        .photo-frame {
+            aspect-ratio: 4/3;
+            background: #f1f5f9;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .photo-frame:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #1a365d;
+        }
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .photo-frame:hover img {
+            transform: scale(1.05);
+        }
+        .photo-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #64748b;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        /* SAME NAVIGATION STYLES */
+        .ribbon-nav {
+            position: relative;
+            background: #1a365d;
+            padding: 5px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            border-bottom: 3px solid #2d3748;
+        }
+        .ribbon-nav::before, .ribbon-nav::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background: inherit;
+            z-index: 1;
+        }
+        .ribbon-nav::before { left: 0; transform: skewX(-25deg); }
+        .ribbon-nav::after { right: 0; transform: skewX(25deg); }
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 50px;
+            padding: 8px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .nav-tabs li { margin: 0 2px; position: relative; }
+        .nav-tabs > li > a {
+            display: block;
+            padding: 14px 20px;
+            color: #1a365d;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .nav-tabs > li > a:hover, .nav-tabs > li > a.active {
+            background: #ffffff;
+            color: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(255,255,255,0.98);
+            min-width: 250px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            border-radius: 16px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+            margin-top: 8px;
+            backdrop-filter: blur(20px);
+        }
+        .dropdown:hover .dropdown-content { 
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .dropdown-content a {
+            color: #1a365d !important;
+            padding: 14px 20px !important;
+            display: block !important;
+            border-radius: 0 !important;
+            font-size: 0.88em !important;
+            border-bottom: 1px solid #f7fafc;
+            text-transform: none !important;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: #edf2f7 !important; }
+        .content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .section {
+            display: none;
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+        .section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section h2 {
+            color: #1a365d;
+            margin-bottom: 35px;
+            font-size: 2.5em;
+            text-align: center;
+            font-weight: 600;
+            position: relative;
+        }
+        .section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #1a365d;
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        footer {
+            background: #1a365d;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            margin-top: 60px;
+        }
+        @media (max-width: 768px) {
+            .header { background-attachment: scroll; padding: 60px 20px 40px; min-height: 350px; }
+            .logo { font-size: 2.2em; }
+            .subtitle { font-size: 1.3em; }
+            .nav-tabs { flex-wrap: wrap; }
+            .photo-frames { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+            .content { padding: 40px 20px; }
+            .section { padding: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">Farwest Gymnastic Association</div>
+            <div class="subtitle">Sudurpashchim Gymnastics Governing Body | Dhangadhi, Sudurpashchim Province</div>
+        </div>
+    </header>
+
+    <nav class="ribbon-nav">
+        <div class="nav-container">
+            <ul class="nav-tabs">
+                <li><a href="#" class="tab-link active" data-tab="home">Home</a></li>
+                <li><a href="#" class="tab-link" data-tab="photos">Photos</a></li>
+                <li class="dropdown">
+                    <a href="#" class="tab-link" data-tab="competition">Competitions</a>
+                    <div class="dropdown-content">
+                        <a href="#" class="tab-link" data-tab="competition">Upcoming Events</a>
+                        <a href="#" class="tab-link" data-tab="results">Past Results</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="tab-link" data-tab="about">About</a>
+                    <div class="dropdown-content">
+                        <a href="#" class="tab-link" data-tab="about">About FGA</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="tab-link" data-tab="branches">Branches</a>
+                    <div class="dropdown-content">
+                        <a href="#" class="tab-link" data-tab="kailali">Kailali</a>
+                        <a href="#" class="tab-link" data-tab="kanchanpur">Kanchanpur</a>
+                        <a href="#" class="tab-link" data-tab="dadeldhura">Dadeldhura</a>
+                        <a href="#" class="tab-link" data-tab="doti">Doti</a>
+                        <a href="#" class="tab-link" data-tab="baitadi">Baitadi</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="content">
+        <section id="home" class="section active">
+            <h2>Recent Highlights</h2>
+            
+            <!-- 🖼️ PHOTO FRAMES - ADD YOUR IMAGES HERE -->
+            <div class="photo-frames">
+                <!-- FRAME 1 -->
+                <div class="photo-frame">
+                    <!-- REPLACE 'photo1.jpg' WITH YOUR IMAGE PATH -->
+                    <img src="photo1.jpg" alt="Gymnastics Event">
+                </div>
+                
+                <!-- FRAME 2 -->
+                <div class="photo-frame">
+                    <!-- REPLACE 'photo2.jpg' WITH YOUR IMAGE PATH -->
+                    <img src="photo2.jpg" alt="Training Session">
+                </div>
+                
+                <!-- FRAME 3 -->
+                <div class="photo-frame">
+                    <!-- REPLACE 'photo3.jpg' WITH YOUR IMAGE PATH -->
+                    <img src="photo3.jpg" alt="Competition">
+                </div>
+                
+                <!-- FRAME 4 -->
+                <div class="photo-frame">
+                    <!-- REPLACE 'photo4.jpg' WITH YOUR IMAGE PATH -->
+                    <img src="photo4.jpg" alt="Award Ceremony">
+                </div>
+                
+                <!-- FRAME 5 - PLACEHOLDER EXAMPLE -->
+                <div class="photo-frame">
+                    <div class="photo-placeholder">
+                        photo5.jpg<br>
+                        <small>Click to add</small>
+                    </div>
+                </div>
+                
+                <!-- FRAME 6 - PLACEHOLDER EXAMPLE -->
+                <div class="photo-frame">
+                    <div class="photo-placeholder">
+                        photo6.jpg<br>
+                        <small>Double-click</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="org-chart" style="margin-top: 60px;">
+                <div class="org-level">
+                    <div class="org-node main">Farwest Gymnastic Association</div>
+                </div>
+                <div class="horizontal-line" style="margin: 20px 0;"></div>
+                <div class="org-level branch">
+                    <div class="org-node">Kailali</div>
+                    <div class="org-node">Kanchanpur</div>
+                    <div class="org-node">Dadeldhura</div>
+                    <div class="org-node">Doti</div>
+                    <div class="org-node">Baitadi</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="photos" class="section">
+            <h2>Photo Gallery</h2>
+            <!-- SAME PHOTO FRAMES HERE FOR FULL GALLERY -->
+            <div class="photo-frames">
+                <div class="photo-frame">
+                    <img src="gallery1.jpg" alt="Gallery Photo 1">
+                </div>
+                <div class="photo-frame">
+                    <img src="gallery2.jpg" alt="Gallery Photo 2">
+                </div>
+                <!-- ADD MORE FRAMES AS NEEDED -->
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <h2>About FGA</h2>
+            <p>Farwest Gymnastic Association promotes gymnastics across 5 districts.[file:1]</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Farwest Gymnastic Association. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const sections = document.querySelectorAll('.section');
+
+            tabLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    tabLinks.forEach(function(tab) {
+                        if (!tab.parentElement.classList.contains('dropdown-content')) {
+                            tab.classList.remove('active');
+                        }
+                    });
+                    
+                    sections.forEach(function(section) {
+                        section.classList.remove('active');
+                    });
+                    
+                    if (!this.parentElement.classList.contains('dropdown-content')) {
+                        this.classList.add('active');
+                    }
+                    
+                    const targetSection = document.getElementById(targetTab);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
